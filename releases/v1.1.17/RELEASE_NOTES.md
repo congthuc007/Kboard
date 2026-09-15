@@ -5,4 +5,4 @@
 
 ## Chi tiet loi tai ban v1.1.17
 - **Loi mat dong bo phim bo tro**: Thu nghiem dong bo phuc tap gay cham tre va bat on dinh khi truyen qua UDP trong cac moi truong mang cuc bo.
-- **Khac phuc o ban v1.1.19**: Su dung co che truyen modifier don gian va on dinh cua ban goc v14.
+- **Khac phuc o ban v1.1.19**: Su dung co che truyen modifier don gian va on dinh cua ban v14.

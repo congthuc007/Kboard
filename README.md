@@ -8,7 +8,7 @@
 ![Network](https://img.shields.io/badge/LAN-UDP%20Auto--Discovery-00C853?style=for-the-badge)
 ![Version](https://img.shields.io/badge/Version-v1.1.19-FF6D00?style=for-the-badge)
 
-**Giải pháp biến điện thoại thông minh thành Bàn phím cơ ảo siêu mượt, độ trễ cực thấp cho Máy tính, Laptop và Điện thoại khác.**
+**Ứng dụng biến điện thoại thông minh thành bàn phím cơ ảo cho Máy tính, Laptop và Thiết bị Android khác qua kết nối Wi-Fi LAN hoặc Bluetooth.**
 
 <br/>
 
@@ -26,40 +26,40 @@
 
 ## 1. Giới thiệu tổng quan
 
-**Kboard** là hệ thống emulated input thế hệ mới với kiến trúc **Dual-Role (2-trong-1)** và **Dual-Transport (Bluetooth HID + Wi-Fi LAN)**:
-- Biến một chiếc điện thoại phụ thành **bàn phím rời chuẩn 75% PC Keyboard** với đầy đủ các phím điều hướng, hàng phím chức năng F1-F12, phím số, phím bổ trợ Ctrl/Alt/Win/Shift và thanh phím tắt macro.
-- Hỗ trợ gõ trực tiếp vào **Máy tính/Laptop Windows** (thông qua bộ nhận độc lập không cần cài driver) hoặc gửi phím sang một **Điện thoại khác** để điều khiển, chơi game, hoặc nhập liệu tốc độ cao vào các **ứng dụng clone (App Clone / Dual Apps)**.
+**Kboard** hỗ trợ nhập liệu với kiến trúc **Dual-Role (Bàn phím / Máy nhận)** và **Dual-Transport (Bluetooth HID + Wi-Fi LAN)**:
+- Biến điện thoại thành **bàn phím rời layout 75%** với đầy đủ các phím điều hướng, hàng phím chức năng F1-F12, phím số, phím bổ trợ Ctrl/Alt/Win/Shift và thanh phím tắt macro.
+- Hỗ trợ gửi phím trực tiếp tới **Máy tính/Laptop Windows** (thông qua bộ nhận độc lập không cần cài driver) hoặc gửi phím sang **Điện thoại khác** để điều khiển, chơi game hoặc nhập liệu vào các **ứng dụng clone (App Clone / Dual Apps)**.
 
 ---
 
 ## 2. Tính năng công nghệ nổi bật
 
-### Layout chuẩn 75% PC Mechanical Keyboard
-* **Tối ưu hóa xoay ngang (sensorLandscape)**: Giao diện tràn viền cạnh-đến-cạnh (Edge-to-Edge) tối ưu cho thao tác 2 ngón cái, thiết kế cơ học Dark Mode sắc nét, không bị chạm nhầm.
+### Layout 75% PC Keyboard
+* **Tối ưu hóa xoay ngang (sensorLandscape)**: Giao diện tràn viền (Edge-to-Edge) bố trí cho thao tác 2 ngón cái, thiết kế cơ học Dark Mode rõ ràng.
 * **Đầy đủ 6 hàng phím PC**: Đầy đủ `Esc`, hàng `F1` - `F12`, phím `Del`, dãy số & ký tự đặc biệt, phím điều hướng `▲ ▼ ◄ ►`, `Tab`, `Caps Lock`, `Enter`, `Backspace`, `Ctrl`, `Alt`, `Win`, `Shift`.
-* **Hardware Key Repeat (Đè phím lặp ký tự)**: Tích hợp engine lặp phím phần cứng — nhấn giữ phím quá 380ms sẽ kích hoạt chu kỳ lặp siêu tốc 45ms (~22 ký tự/giây) hệt như bàn phím cơ thật.
+* **Hardware Key Repeat (Đè phím lặp ký tự)**: Tích hợp engine lặp phím — nhấn giữ phím quá 380ms sẽ kích hoạt chu kỳ lặp phím 45ms (~22 ký tự/giây) tương tự phím vật lý.
 * **Thanh Macro 1 chạm**: Tích hợp sẵn các tổ hợp phím phổ biến: `Ctrl+C`, `Ctrl+V`, `Ctrl+A`, `Ctrl+Z`, `Alt+Tab`, `Win`.
 
-### Công nghệ truyền tải kép (Dual-Transport)
+### Cơ chế truyền tải (Dual-Transport)
 * **Bluetooth HID Device Profile**:
-  * Đóng vai trò là một thiết bị ngoại vi USB HID Keyboard chuẩn quốc tế.
-  * Nếu thiết bị gửi hỗ trợ Bluetooth HID Device, máy nhận (PC, Laptop, Smartphone) sẽ nhận diện trực tiếp như bàn phím Bluetooth thật mà **hoàn toàn không cần cài bất kỳ phần mềm nào trên máy nhận**.
-* **Wi-Fi LAN UDP Bridge (Độ trễ < 1ms)**:
-  * Hoạt động thông qua mạng Wi-Fi nội bộ bằng giao thức UDP phân gói siêu nhẹ trên cổng 8964.
-  * **Tự động dò tìm thiết bị (Zero-Config Auto Discovery)**: Thiết bị gửi tự động quét và phát hiện các máy nhận đang trực tuyến trong mạng LAN, kết nối tức thì chỉ với 1 chạm.
+  * Đóng vai trò là thiết bị ngoại vi USB HID Keyboard.
+  * Nếu thiết bị gửi hỗ trợ Bluetooth HID Device, máy nhận (PC, Laptop, Smartphone) có thể nhận diện trực tiếp như bàn phím Bluetooth mà **không cần cài thêm phần mềm trên máy nhận**.
+* **Wi-Fi LAN UDP Bridge**:
+  * Hoạt động thông qua mạng Wi-Fi nội bộ bằng giao thức UDP trên cổng 8964.
+  * **Tự động dò tìm thiết bị (Auto Discovery)**: Thiết bị gửi hỗ trợ quét và phát hiện các máy nhận đang trực tuyến trong cùng mạng LAN để kết nối nhanh.
 
 ### Bộ gõ Tiếng Việt Telex & Bàn phím ảo hệ thống (Android IME)
 * **Tích hợp sẵn Kboard IME (InputMethodService)**:
   * Hoạt động như một bộ gõ hệ thống trên điện thoại nhận.
   * Cho phép gõ phím trực tiếp vào **App Clone, ứng dụng chat, game giả lập** mà không bị giới hạn bởi sandbox bảo mật của Android.
-* **Vietnamese Telex Engine nguyên bản**:
+* **Bộ gõ Tiếng Việt Telex tích hợp**:
   * Tự động nhận diện và xử lý dấu tiếng Việt theo chuẩn Telex (`aa` -> `â`, `aw` -> `ă`, `dd` -> `đ`, `s/f/r/x/j` bỏ dấu tự nhiên).
   * Nút chuyển đổi nhanh `[ VI ]` / `[ EN ]` trực tiếp trên thanh Macro và trong hộp thoại Cài đặt, tự động đồng bộ tới máy nhận theo thời gian thực.
 
 ### Windows Companion Receiver (Kboard_Receiver.exe)
-* Standalone Portable Receiver cho Windows với giao diện **Desktop GUI Dark Mode** chuyên nghiệp, không cần cài đặt Python hay driver phức tạp.
-* Sử dụng Windows API `SendInput` kết hợp phần cứng scancode `user32.MapVirtualKeyW`, mô phỏng chính xác tín hiệu bàn phím vật lý cho mọi tựa game và ứng dụng Windows.
-* Tích hợp Single-Instance Mutex ngăn mở đè tiến trình, màn hình giám sát phím thời gian thực và nút sao chép IP 1-chạm.
+* Bộ nhận độc lập (Portable) cho Windows với giao diện **Desktop GUI Dark Mode**, không cần cài đặt môi trường Python hay driver bổ sung.
+* Sử dụng Windows API `SendInput` kết hợp scancode `user32.MapVirtualKeyW`, chuyển tiếp tín hiệu phím tới các ứng dụng và game trên Windows.
+* Tích hợp Single-Instance Mutex ngăn mở đè tiến trình, màn hình giám sát phím thời gian thực và nút sao chép IP nhanh.
 
 ---
 
@@ -108,7 +108,7 @@
 2. **Trên điện thoại làm bàn phím**:
    * Mở app Kboard -> Chọn `[ Bàn phím ]` -> Chọn tab `[ Wi-Fi LAN ]`.
    * App sẽ tự động quét và hiện tên máy nhận trên thanh kết nối. Bấm vào tên máy để kết nối ngay.
-   * Gõ chữ, phím tắt `Ctrl+C`, `Ctrl+V`, `Ctrl+A` sẽ được truyền trực tiếp vào app clone với độ trễ gần như bằng 0.
+   * Gõ chữ, phím tắt `Ctrl+C`, `Ctrl+V`, `Ctrl+A` sẽ được truyền trực tiếp vào app clone.
 
 ---
 
@@ -140,7 +140,7 @@
 
 | Phiên bản | Trạng thái | Chi tiết |
 | :--- | :--- | :--- |
-| **v1.1.19** | **Ổn định (Khuyến nghị nhất)** | Phục hồi kiến trúc IME chuẩn v14, khắc phục triệt để tổ hợp Macro Ctrl+A/C/V/Z, giảm độ trễ nút Win còn 15ms, nâng cấp Receiver GUI hiện đại. |
+| **v1.1.19** | **Ổn định** | Khôi phục kiến trúc IME v14, xử lý sự kiện phím bổ trợ cho tổ hợp Macro Ctrl+A/C/V/Z, giảm thời gian trễ nút Win xuống 15ms, cập nhật Receiver GUI. |
 | v1.1.15 - v1.1.18 | **Đã thu hồi (Không sử dụng)** | Các bản thử nghiệm có lỗi thoát app clone khi bấm Win hoặc bị chặn sự kiện bàn phím. Đã gỡ khỏi GitHub Releases. |
 | v1.1.14 | **Ổn định (Cũ)** | Bản ổn định cột mốc hỗ trợ IME phần cứng. |
 | v1.1.4 - v1.1.13 | **Lưu trữ** | Các phiên bản phát triển tính năng ban đầu. |
@@ -156,5 +156,5 @@
 ---
 
 <div align="center">
-  <i>Được phát triển với tinh thần kỹ thuật chính xác, tối ưu hóa phần cứng và trải nghiệm người dùng không thỏa hiệp.</i>
+  <i>Kboard - Emulated Input System for Android & Windows</i>
 </div>

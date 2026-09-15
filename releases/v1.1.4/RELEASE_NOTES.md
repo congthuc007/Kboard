@@ -2,11 +2,11 @@
 
 ## Điểm mới trong phiên bản v1.1.4:
 1. **Thương hiệu & Tên ứng dụng mới:** Đổi tên chính thức thành **Kboard** (Bàn phím hệ thống: `Kboard LAN Keyboard`).
-2. **Logo mới Full-Bleed 100%:** Triệt tiêu hoàn toàn lỗi viền trắng trên mọi giao diện Android (MIUI, HyperOS, OneUI, Pixel).
-3. **Phím tắt trong App Clone:** Hoạt động mượt mà cho các tổ hợp phím `Ctrl+C`, `Ctrl+V`, `Ctrl+A`, `Ctrl+X`, `Ctrl+Z` qua `InputMethodService`.
-4. **Bộ gõ Tiếng Việt Telex tích hợp:** Tự động bỏ dấu tiếng Việt chuẩn xác với nút bật/tắt nhanh `[ Telex: BẬT ]` / `[ Telex: TẮT ]`.
-5. **Đè phím lặp ký tự (Hardware Key Repeat):** Giữ phím quá 380ms sẽ lặp liên tục tốc độ 45ms (~22 ký tự/giây) như phím cơ thật.
-6. **Làm sạch mã nguồn:** Loại bỏ 100% tên thiết bị hardcode và toàn bộ icon emoji.
+2. **Cập nhật Logo Full-Bleed:** Xử lý viền trắng trên các giao diện Android (MIUI, HyperOS, OneUI, Pixel).
+3. **Phím tắt trong App Clone:** Hỗ trợ các tổ hợp phím `Ctrl+C`, `Ctrl+V`, `Ctrl+A`, `Ctrl+X`, `Ctrl+Z` qua `InputMethodService`.
+4. **Bộ gõ Tiếng Việt Telex tích hợp:** Tự động bỏ dấu tiếng Việt với nút chuyển đổi `[ Telex: BẬT ]` / `[ Telex: TẮT ]`.
+5. **Đè phím lặp ký tự (Hardware Key Repeat):** Giữ phím quá 380ms sẽ lặp ký tự theo chu kỳ 45ms (~22 ký tự/giây) tương tự phím vật lý.
+6. **Làm sạch mã nguồn:** Loại bỏ các định danh hardcode và các icon emoji.
 
 ## Tệp đính kèm trong thư mục:
 * `Kboard_v1.1.4.apk`: Bản cài đặt Android (API 28+).
