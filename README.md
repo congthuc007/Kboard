@@ -12,13 +12,13 @@
 
 <br/>
 
-[![Download Android APK](https://img.shields.io/badge/Tải_ngay-Kboard.apk_(Android)-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/ncthuc2004/Kboard/releases/download/v1.1.19/Kboard.apk)
-[![Download Windows Receiver](https://img.shields.io/badge/Tải_ngay-Kboard_Receiver.exe_(Windows)-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/ncthuc2004/Kboard/releases/download/v1.1.19/Kboard_Receiver.exe)
-[![View All Releases](https://img.shields.io/badge/Tất_cả_phiên_bản-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/ncthuc2004/Kboard/releases)
+[![Download Android APK](https://img.shields.io/badge/Tải_ngay-Kboard.apk_(Android)-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.19/Kboard.apk)
+[![Download Windows Receiver](https://img.shields.io/badge/Tải_ngay-Kboard_Receiver.exe_(Windows)-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.19/Kboard_Receiver.exe)
+[![View All Releases](https://img.shields.io/badge/Tất_cả_phiên_bản-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/congthuc007/Kboard/releases)
 
 <br/>
 
-**Tác giả:** [Nguyễn Công Thức (Kaius)](https://github.com/ncthuc2004) • **Phiên bản mới nhất:** [v1.1.19 Release](https://github.com/ncthuc2004/Kboard/releases/tag/v1.1.19)
+**Tác giả:** [Nguyễn Công Thức (Kaius)](https://github.com/congthuc007) • **Phiên bản mới nhất:** [v1.1.19 Release](https://github.com/congthuc007/Kboard/releases/tag/v1.1.19)
 
 </div>
 
@@ -94,9 +94,9 @@
 
 | Nền tảng | Tệp cài đặt | Nút tải trực tiếp (1-Click) | Ghi chú |
 | :--- | :--- | :---: | :--- |
-| **Android** | `Kboard.apk` | [**Tải Kboard.apk**](https://github.com/ncthuc2004/Kboard/releases/download/v1.1.19/Kboard.apk) | Bản cài đặt cho điện thoại làm bàn phím hoặc điện thoại nhận |
-| **Windows** | `Kboard_Receiver.exe` | [**Tải Windows Receiver**](https://github.com/ncthuc2004/Kboard/releases/download/v1.1.19/Kboard_Receiver.exe) | Giao diện Desktop GUI chạy ngay trên Laptop/PC Windows (không cần cài driver) |
-| **Lịch sử** | Bản ổn định | [**Xem GitHub Releases**](https://github.com/ncthuc2004/Kboard/releases) | Kho lưu trữ các phiên bản phát hành chính thức |
+| **Android** | `Kboard.apk` | [**Tải Kboard.apk**](https://github.com/congthuc007/Kboard/releases/download/v1.1.19/Kboard.apk) | Bản cài đặt cho điện thoại làm bàn phím hoặc điện thoại nhận |
+| **Windows** | `Kboard_Receiver.exe` | [**Tải Windows Receiver**](https://github.com/congthuc007/Kboard/releases/download/v1.1.19/Kboard_Receiver.exe) | Giao diện Desktop GUI chạy ngay trên Laptop/PC Windows (không cần cài driver) |
+| **Lịch sử** | Bản ổn định | [**Xem GitHub Releases**](https://github.com/congthuc007/Kboard/releases) | Kho lưu trữ các phiên bản phát hành chính thức |
 
 ---
 
@@ -150,7 +150,7 @@
 ## 7. Tác giả
  
 * **Kỹ sư phát triển:** **Nguyễn Công Thức (Kaius)**
-* **GitHub:** [https://github.com/ncthuc2004](https://github.com/ncthuc2004)
+* **GitHub:** [https://github.com/congthuc007](https://github.com/congthuc007)
 * **Dự án:** *Kboard Ecosystem*
 
 ---
