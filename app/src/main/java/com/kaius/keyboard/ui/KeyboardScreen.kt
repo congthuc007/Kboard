@@ -14,8 +14,10 @@ import android.app.Activity
 import android.provider.Settings
 import android.view.inputmethod.InputMethodManager
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
@@ -34,24 +36,28 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.Keyboard
-import androidx.compose.material.icons.filled.PowerSettingsNew
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Terminal
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -60,6 +66,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -176,59 +184,74 @@ fun KeyboardScreen(viewModel: KeyboardViewModel) {
         if (appRole == AppRole.RECEIVER) {
             ReceiverScreen(viewModel = viewModel)
         } else {
-            // PERMANENT LAN CONNECTION BAR: Target IP, Discovered Devices & Scan
-            if (currentMode == TransportMode.WIFI_LAN) {
-                Spacer(modifier = Modifier.height(2.dp))
-                LanConnectionBar(
-                    myLocalIp = myLocalIp,
-                    targetIp = state.wifiTargetIp,
-                    targetPort = state.wifiTargetPort,
-                    receivers = discoveredReceivers,
-                    isScanning = isLanScanning,
-                    onOpenConfig = { viewModel.openSettings(4) },
-                    onScan = { viewModel.refreshLanDiscovery() },
-                    onSelectReceiver = { viewModel.connectToDiscoveredReceiver(it) }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            // QUICK SHORTCUTS & MACRO BAR (Sleek minimalist keys with direct VI/EN toggle)
-            QuickMacroBar(
-                isTelexEnabled = isTelexEnabled,
-                onToggleTelex = { viewModel.toggleTelex() },
-                onSendMacro = { mod, key -> viewModel.sendMacro(mod, key) }
-            )
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            // MAIN PC KEYBOARD LAYOUT (Fills 90% of landscape height)
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth()
-            ) {
-                PcKeyboardLayout(
-                    activeModifiers = modifiers,
-                    onKeyDown = { viewModel.onKeyDown(it) },
-                    onKeyUp = { viewModel.onKeyUp(it) },
-                    onKeyTap = { viewModel.onKeyTap(it) },
-                    onToggleModifier = { viewModel.toggleModifier(it) },
-                    settings = runtimeSettings
-                )
-
-                if (!isKeyboardActive) {
-                    StandbyOverlay(
-                        onActivate = { viewModel.setKeyboardActive(true) },
-                        onMinimize = {
-                            (context as? Activity)?.moveTaskToBack(true)
-                        },
-                        onRestoreDefaultIme = {
-                            val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
-                            imm?.showInputMethodPicker()
-                        }
+            if (isKeyboardActive) {
+                // PERMANENT LAN CONNECTION BAR: Target IP, Discovered Devices & Scan
+                if (currentMode == TransportMode.WIFI_LAN) {
+                    Spacer(modifier = Modifier.height(2.dp))
+                    LanConnectionBar(
+                        myLocalIp = myLocalIp,
+                        targetIp = state.wifiTargetIp,
+                        targetPort = state.wifiTargetPort,
+                        receivers = discoveredReceivers,
+                        isScanning = isLanScanning,
+                        onOpenConfig = { viewModel.openSettings(4) },
+                        onScan = { viewModel.refreshLanDiscovery() },
+                        onSelectReceiver = { viewModel.connectToDiscoveredReceiver(it) }
                     )
                 }
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                // QUICK SHORTCUTS & MACRO BAR (Sleek minimalist keys with direct VI/EN toggle)
+                QuickMacroBar(
+                    isTelexEnabled = isTelexEnabled,
+                    onToggleTelex = { viewModel.toggleTelex() },
+                    onSendMacro = { mod, key -> viewModel.sendMacro(mod, key) }
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                // MAIN PC KEYBOARD LAYOUT (Fills 90% of landscape height)
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                ) {
+                    PcKeyboardLayout(
+                        activeModifiers = modifiers,
+                        onKeyDown = { viewModel.onKeyDown(it) },
+                        onKeyUp = { viewModel.onKeyUp(it) },
+                        onKeyTap = { viewModel.onKeyTap(it) },
+                        onToggleModifier = { viewModel.toggleModifier(it) },
+                        settings = runtimeSettings
+                    )
+                }
+            } else {
+                KeyboardStandbyScreen(
+                    currentMode = currentMode,
+                    state = state,
+                    myLocalIp = myLocalIp,
+                    isKeyboardActive = isKeyboardActive,
+                    onSetKeyboardActive = { viewModel.setKeyboardActive(it) },
+                    onOpenSettings = { viewModel.openSettings(0) },
+                    onOpenTransportSetup = {
+                        if (currentMode == TransportMode.WIFI_LAN) {
+                            viewModel.openSettings(4)
+                        } else {
+                            viewModel.setShowPairedDialog(true)
+                        }
+                    },
+                    onRestoreDefaultIme = {
+                        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+                        imm?.showInputMethodPicker()
+                    },
+                    onMinimize = {
+                        (context as? Activity)?.moveTaskToBack(true)
+                    },
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                )
             }
 
             // COLLAPSIBLE DIAGNOSTICS CONSOLE
@@ -480,15 +503,11 @@ fun LandscapeUnifiedHeader(
                         Icon(Icons.Default.Terminal, contentDescription = "Console", tint = KeyTextSubtle, modifier = Modifier.size(15.dp))
                     }
 
-                    // Power / Standby Button (Sleep mode & Return to normal state)
-                    IconButton(onClick = onTogglePower, modifier = Modifier.size(24.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.PowerSettingsNew,
-                            contentDescription = if (isKeyboardActive) "Nghỉ (Tắt bàn phím)" else "Bật lại bàn phím",
-                            tint = if (isKeyboardActive) StatusSuccess else StatusPending,
-                            modifier = Modifier.size(15.dp)
-                        )
-                    }
+                    // Keyboard ON/OFF Switch (Always visible in Keyboard role)
+                    HeaderKeyboardSwitch(
+                        checked = isKeyboardActive,
+                        onCheckedChange = { onTogglePower() }
+                    )
                 }
             }
         }
@@ -1264,130 +1283,325 @@ fun PairedDevicesDialog(
 }
 
 @Composable
-fun StandbyOverlay(
-    onActivate: () -> Unit,
-    onMinimize: () -> Unit,
-    onRestoreDefaultIme: () -> Unit
+fun HeaderKeyboardSwitch(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
 ) {
-    Box(
+    val trackColor by animateColorAsState(
+        targetValue = if (checked) StatusSuccess.copy(alpha = 0.25f) else AppBg,
+        animationSpec = tween(180),
+        label = "header_switch_track"
+    )
+    val borderColor by animateColorAsState(
+        targetValue = if (checked) StatusSuccess else SurfaceBorder,
+        animationSpec = tween(180),
+        label = "header_switch_border"
+    )
+    val thumbColor by animateColorAsState(
+        targetValue = if (checked) StatusSuccess else KeyTextSubtle,
+        animationSpec = tween(180),
+        label = "header_switch_thumb"
+    )
+    val thumbOffset by animateDpAsState(
+        targetValue = if (checked) 15.dp else 2.dp,
+        animationSpec = tween(180),
+        label = "header_switch_offset"
+    )
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .fillMaxSize()
-            .background(AppBg.copy(alpha = 0.94f))
-            .clickable(
-                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
-                indication = null
-            ) {
-                // Intercept touches so nothing passes through to keyboard keys below
-            },
+            .padding(start = 4.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .background(SurfaceElevated)
+            .border(1.dp, borderColor.copy(alpha = 0.7f), RoundedCornerShape(12.dp))
+            .clickable { onCheckedChange(!checked) }
+            .padding(horizontal = 6.dp, vertical = 3.dp)
+    ) {
+        Text(
+            text = if (checked) "BẬT" else "TẮT",
+            fontSize = 9.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (checked) StatusSuccess else StatusPending,
+            fontFamily = FontFamily.Monospace
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Box(
+            modifier = Modifier
+                .width(28.dp)
+                .height(14.dp)
+                .clip(RoundedCornerShape(7.dp))
+                .background(trackColor)
+                .border(1.dp, borderColor, RoundedCornerShape(7.dp)),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            Box(
+                modifier = Modifier
+                    .offset(x = thumbOffset)
+                    .size(10.dp)
+                    .clip(CircleShape)
+                    .background(thumbColor)
+            )
+        }
+    }
+}
+
+@Composable
+fun KeyboardStandbyScreen(
+    currentMode: TransportMode,
+    state: com.kaius.keyboard.transport.TransportState,
+    myLocalIp: String,
+    isKeyboardActive: Boolean,
+    onSetKeyboardActive: (Boolean) -> Unit,
+    onOpenSettings: () -> Unit,
+    onOpenTransportSetup: () -> Unit,
+    onRestoreDefaultIme: () -> Unit,
+    onMinimize: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val scrollState = rememberScrollState()
+    Box(
+        modifier = modifier
+            .background(AppBg)
+            .verticalScroll(scrollState)
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(16.dp)
+        Surface(
+            color = SurfaceBar,
+            shape = RoundedCornerShape(8.dp),
+            border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceBorder),
+            modifier = Modifier
+                .widthIn(max = 560.dp)
+                .fillMaxWidth()
         ) {
-            Icon(
-                imageVector = Icons.Default.PowerSettingsNew,
-                contentDescription = null,
-                tint = StatusPending,
-                modifier = Modifier.size(38.dp)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = "BÀN PHÍM ĐANG Ở CHẾ ĐỘ NGHỈ (STANDBY)",
-                color = KeyTextMain,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
-                letterSpacing = 1.sp
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = "Các phím đã tạm khóa • Màn hình có thể tắt tự nhiên để tiết kiệm pin",
-                color = KeyTextSubtle,
-                fontSize = 11.sp
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Surface(
-                    color = KeyActiveBg,
-                    shape = RoundedCornerShape(5.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, AccentPrimary),
-                    modifier = Modifier.clickable { onActivate() }
+                // Status Header Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.PowerSettingsNew,
-                            contentDescription = null,
-                            tint = AccentPrimary,
-                            modifier = Modifier.size(15.dp)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(8.dp)
+                                .clip(CircleShape)
+                                .background(if (isKeyboardActive) StatusSuccess else StatusPending)
                         )
-                        Spacer(modifier = Modifier.width(6.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "BẬT LẠI BÀN PHÍM",
-                            color = AccentPrimary,
+                            text = "TRẠNG THÁI BÀN PHÍM",
+                            color = KeyTextMuted,
                             fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = FontFamily.Monospace,
+                            letterSpacing = 1.sp
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(if (isKeyboardActive) StatusSuccess.copy(alpha = 0.15f) else StatusPending.copy(alpha = 0.15f))
+                            .border(
+                                1.dp,
+                                if (isKeyboardActive) StatusSuccess.copy(alpha = 0.6f) else StatusPending.copy(alpha = 0.6f),
+                                RoundedCornerShape(4.dp)
+                            )
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            text = if (isKeyboardActive) "ĐANG BẬT" else "ĐANG TẮT",
+                            color = if (isKeyboardActive) StatusSuccess else StatusPending,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             fontFamily = FontFamily.Monospace
                         )
                     }
                 }
 
+                // Main Toggle Switch Row
                 Surface(
                     color = SurfaceElevated,
-                    shape = RoundedCornerShape(5.dp),
+                    shape = RoundedCornerShape(6.dp),
                     border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceBorderSubtle),
-                    modifier = Modifier.clickable { onRestoreDefaultIme() }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onSetKeyboardActive(!isKeyboardActive) }
                 ) {
                     Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 14.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Keyboard,
-                            contentDescription = null,
-                            tint = KeyTextMain,
-                            modifier = Modifier.size(15.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "Đổi Bàn Phím Thường (Gboard)",
-                            color = KeyTextMain,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Medium
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Bàn phím cơ ảo 75%",
+                                color = KeyTextMain,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(3.dp))
+                            Text(
+                                text = "Gạt công tắc sang BẬT để mở bàn phím và bắt đầu gõ.",
+                                color = KeyTextSubtle,
+                                fontSize = 11.sp
+                            )
+                            Spacer(modifier = Modifier.height(6.dp))
+                            val transportSummary = if (currentMode == TransportMode.BLUETOOTH_HID) {
+                                "Bluetooth HID • ${state.statusMessage}"
+                            } else {
+                                "Wi-Fi LAN • Máy này: $myLocalIp -> Đích: ${state.wifiTargetIp}:${state.wifiTargetPort}"
+                            }
+                            Text(
+                                text = transportSummary,
+                                color = AccentPrimary,
+                                fontSize = 10.sp,
+                                fontFamily = FontFamily.Monospace
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(12.dp))
+
+                        Switch(
+                            checked = isKeyboardActive,
+                            onCheckedChange = onSetKeyboardActive,
+                            colors = SwitchDefaults.colors(
+                                checkedThumbColor = AppBg,
+                                checkedTrackColor = StatusSuccess,
+                                uncheckedThumbColor = KeyTextMuted,
+                                uncheckedTrackColor = AppBg,
+                                uncheckedBorderColor = SurfaceBorder
+                            )
                         )
                     }
                 }
 
-                Surface(
-                    color = SurfaceElevated,
-                    shape = RoundedCornerShape(5.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceBorderSubtle),
-                    modifier = Modifier.clickable { onMinimize() }
+                // Quick Utility Actions Row
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                    Surface(
+                        color = AppBg,
+                        shape = RoundedCornerShape(5.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceBorderSubtle),
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onOpenTransportSetup() }
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.VisibilityOff,
-                            contentDescription = null,
-                            tint = KeyTextSubtle,
-                            modifier = Modifier.size(15.dp)
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "Về Màn Hình Chính",
-                            color = KeyTextSubtle,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Medium
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = if (currentMode == TransportMode.WIFI_LAN) Icons.Default.Wifi else Icons.Default.Devices,
+                                contentDescription = null,
+                                tint = AccentPrimary,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                text = if (currentMode == TransportMode.WIFI_LAN) "Cấu hình LAN" else "Thiết bị BT",
+                                color = KeyTextMain,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+
+                    Surface(
+                        color = AppBg,
+                        shape = RoundedCornerShape(5.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceBorderSubtle),
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable { onOpenSettings() }
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = null,
+                                tint = KeyTextMuted,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                text = "Cài đặt",
+                                color = KeyTextMain,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+
+                    Surface(
+                        color = AppBg,
+                        shape = RoundedCornerShape(5.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceBorderSubtle),
+                        modifier = Modifier
+                            .weight(1.2f)
+                            .clickable { onRestoreDefaultIme() }
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Keyboard,
+                                contentDescription = null,
+                                tint = KeyTextMuted,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                text = "Đổi bàn phím",
+                                color = KeyTextMain,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
+
+                    Surface(
+                        color = AppBg,
+                        shape = RoundedCornerShape(5.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, SurfaceBorderSubtle),
+                        modifier = Modifier
+                            .weight(0.9f)
+                            .clickable { onMinimize() }
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.VisibilityOff,
+                                contentDescription = null,
+                                tint = KeyTextSubtle,
+                                modifier = Modifier.size(14.dp)
+                            )
+                            Spacer(modifier = Modifier.width(5.dp))
+                            Text(
+                                text = "Thu gọn",
+                                color = KeyTextSubtle,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     }
                 }
             }

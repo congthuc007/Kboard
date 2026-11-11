@@ -6,19 +6,19 @@
 ![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Bluetooth](https://img.shields.io/badge/Bluetooth-HID%20Profile-0075FF?style=for-the-badge&logo=bluetooth&logoColor=white)
 ![Network](https://img.shields.io/badge/LAN-UDP%20Auto--Discovery-00C853?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-v1.1.19-FF6D00?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-v1.1.20-FF6D00?style=for-the-badge)
 
 **Ứng dụng biến điện thoại thông minh thành bàn phím cơ ảo cho Máy tính, Laptop và Thiết bị Android khác qua kết nối Wi-Fi LAN hoặc Bluetooth.**
 
 <br/>
 
-[![Download Android APK](https://img.shields.io/badge/Tải_ngay-Kboard.apk_(Android)-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.19/Kboard.apk)
-[![Download Windows Receiver](https://img.shields.io/badge/Tải_ngay-Kboard_Receiver.exe_(Windows)-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.19/Kboard_Receiver.exe)
+[![Download Android APK](https://img.shields.io/badge/Tải_ngay-Kboard.apk_(Android)-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.20/Kboard.apk)
+[![Download Windows Receiver](https://img.shields.io/badge/Tải_ngay-Kboard_Receiver.exe_(Windows)-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.20/Kboard_Receiver.exe)
 [![View All Releases](https://img.shields.io/badge/Tất_cả_phiên_bản-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/congthuc007/Kboard/releases)
 
 <br/>
 
-**Tác giả:** [Nguyễn Công Thức (Kaius)](https://github.com/congthuc007) • **Phiên bản mới nhất:** [v1.1.19 Release](https://github.com/congthuc007/Kboard/releases/tag/v1.1.19)
+**Tác giả:** [Nguyễn Công Thức (Kaius)](https://github.com/congthuc007) • **Phiên bản mới nhất:** [v1.1.20 Release](https://github.com/congthuc007/Kboard/releases/tag/v1.1.20)
 
 </div>
 
@@ -94,8 +94,8 @@
 
 | Nền tảng | Tệp cài đặt | Nút tải trực tiếp (1-Click) | Ghi chú |
 | :--- | :--- | :---: | :--- |
-| **Android** | `Kboard.apk` | [**Tải Kboard.apk**](https://github.com/congthuc007/Kboard/releases/download/v1.1.19/Kboard.apk) | Bản cài đặt cho điện thoại làm bàn phím hoặc điện thoại nhận |
-| **Windows** | `Kboard_Receiver.exe` | [**Tải Windows Receiver**](https://github.com/congthuc007/Kboard/releases/download/v1.1.19/Kboard_Receiver.exe) | Giao diện Desktop GUI chạy ngay trên Laptop/PC Windows (không cần cài driver) |
+| **Android** | `Kboard.apk` | [**Tải Kboard.apk**](https://github.com/congthuc007/Kboard/releases/download/v1.1.20/Kboard.apk) | Bản cài đặt cho điện thoại làm bàn phím hoặc điện thoại nhận |
+| **Windows** | `Kboard_Receiver.exe` | [**Tải Windows Receiver**](https://github.com/congthuc007/Kboard/releases/download/v1.1.20/Kboard_Receiver.exe) | Giao diện Desktop GUI chạy ngay trên Laptop/PC Windows (không cần cài driver) |
 | **Lịch sử** | Bản ổn định | [**Xem GitHub Releases**](https://github.com/congthuc007/Kboard/releases) | Kho lưu trữ các phiên bản phát hành chính thức |
 
 ---
@@ -140,7 +140,8 @@
 
 | Phiên bản | Trạng thái | Chi tiết |
 | :--- | :--- | :--- |
-| **v1.1.19** | **Ổn định** | Khôi phục kiến trúc IME v14, xử lý sự kiện phím bổ trợ cho tổ hợp Macro Ctrl+A/C/V/Z, giảm thời gian trễ nút Win xuống 15ms, cập nhật Receiver GUI. |
+| **v1.1.20** | **Ổn định** | Bổ sung màn hình trạng thái & công tắc gạt Bật/Tắt bàn phím 75% (mặc định Tắt khi cài mới, lưu trạng thái qua các lần mở app). |
+| **v1.1.19** | **Ổn định (Cũ)** | Khôi phục kiến trúc IME v14, xử lý sự kiện phím bổ trợ cho tổ hợp Macro Ctrl+A/C/V/Z, giảm thời gian trễ nút Win xuống 15ms, cập nhật Receiver GUI. |
 | v1.1.15 - v1.1.18 | **Đã thu hồi (Không sử dụng)** | Các bản thử nghiệm có lỗi thoát app clone khi bấm Win hoặc bị chặn sự kiện bàn phím. Đã gỡ khỏi GitHub Releases. |
 | v1.1.14 | **Ổn định (Cũ)** | Bản ổn định cột mốc hỗ trợ IME phần cứng. |
 | v1.1.4 - v1.1.13 | **Lưu trữ** | Các phiên bản phát triển tính năng ban đầu. |

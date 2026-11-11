@@ -4,6 +4,7 @@ import android.app.Application
 import android.bluetooth.BluetoothDevice
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.kaius.keyboard.engine.HidKeyCodes
 import com.kaius.keyboard.engine.InputEngine
 import com.kaius.keyboard.network.DiscoveredReceiver
 import com.kaius.keyboard.network.LanDiscovery
@@ -115,8 +116,8 @@ class KeyboardViewModel(application: Application) : AndroidViewModel(application
     private val _settingsInitialTab = MutableStateFlow(0)
     val settingsInitialTab: StateFlow<Int> = _settingsInitialTab.asStateFlow()
 
-    // Keyboard Active / Standby State (Bật / Tắt Bàn phím khi không dùng)
-    private val _isKeyboardActive = MutableStateFlow(true)
+    // Keyboard Active / Standby State (Mặc định TẮT khi mới cài, lưu trạng thái công tắc)
+    private val _isKeyboardActive = MutableStateFlow(prefs.getBoolean("is_keyboard_active", false))
     val isKeyboardActive: StateFlow<Boolean> = _isKeyboardActive.asStateFlow()
 
     fun toggleKeyboardActive() {
@@ -124,12 +125,25 @@ class KeyboardViewModel(application: Application) : AndroidViewModel(application
     }
 
     fun setKeyboardActive(active: Boolean) {
+        if (_isKeyboardActive.value == active) return
         _isKeyboardActive.value = active
+        prefs.edit().putBoolean("is_keyboard_active", active).apply()
         if (active) {
             if (currentMode.value == TransportMode.WIFI_LAN) {
-                lanDiscovery.startDiscovery()
+                transportManager.wifiTransport.initialize()
+                if (_appRole.value == AppRole.KEYBOARD) {
+                    lanDiscovery.startDiscovery()
+                }
+            } else {
+                val btStatus = transportManager.bluetoothTransport.state.value.status
+                if (btStatus == ConnectionStatus.DISCONNECTED || btStatus == ConnectionStatus.FAILED) {
+                    transportManager.bluetoothTransport.initialize()
+                }
             }
         } else {
+            if (inputEngine.modifiers.value != HidKeyCodes.MOD_NONE) {
+                inputEngine.clearModifiers()
+            }
             lanDiscovery.stopDiscovery()
         }
     }
@@ -142,7 +156,9 @@ class KeyboardViewModel(application: Application) : AndroidViewModel(application
         transportManager.wifiTransport.isTelexEnabled = telexOn
         transportManager.initialize()
         refreshPairedDevices()
-        lanDiscovery.startDiscovery()
+        if (_isKeyboardActive.value && currentMode.value == TransportMode.WIFI_LAN && _appRole.value == AppRole.KEYBOARD) {
+            lanDiscovery.startDiscovery()
+        }
 
         // Periodically refresh my local IP to keep UI in sync with Wi-Fi / Hotspot changes
         viewModelScope.launch(Dispatchers.IO) {
@@ -230,14 +246,20 @@ class KeyboardViewModel(application: Application) : AndroidViewModel(application
             lanServer.start()
         } else {
             lanServer.stop()
-            lanDiscovery.refreshScan()
+            if (_isKeyboardActive.value && currentMode.value == TransportMode.WIFI_LAN) {
+                lanDiscovery.refreshScan()
+            }
         }
     }
 
     fun switchMode(mode: TransportMode) {
         transportManager.setMode(mode)
         if (mode == TransportMode.WIFI_LAN) {
-            lanDiscovery.refreshScan()
+            if (_isKeyboardActive.value && _appRole.value == AppRole.KEYBOARD) {
+                lanDiscovery.refreshScan()
+            }
+        } else {
+            lanDiscovery.stopDiscovery()
         }
     }
 
