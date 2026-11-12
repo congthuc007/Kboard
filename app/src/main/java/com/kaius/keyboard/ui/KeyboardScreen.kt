@@ -56,6 +56,7 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Terminal
+import androidx.compose.material.icons.filled.Usb
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.filled.Wifi
 import androidx.compose.material3.AlertDialog
@@ -90,6 +91,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kaius.keyboard.engine.HidKeyCodes
@@ -178,7 +180,8 @@ fun KeyboardScreen(viewModel: KeyboardViewModel) {
             onOpenPairedDevices = { viewModel.setShowPairedDialog(true) },
             onOpenSettings = { viewModel.openSettings(0) },
             onToggleDiagnostics = { viewModel.toggleDiagnostics() },
-            onReRegister = { viewModel.reRegisterHid() }
+            onReRegister = { viewModel.reRegisterHid() },
+            onReinitUsb = { viewModel.reinitUsbHid() }
         )
 
         if (appRole == AppRole.RECEIVER) {
@@ -235,10 +238,10 @@ fun KeyboardScreen(viewModel: KeyboardViewModel) {
                     onSetKeyboardActive = { viewModel.setKeyboardActive(it) },
                     onOpenSettings = { viewModel.openSettings(0) },
                     onOpenTransportSetup = {
-                        if (currentMode == TransportMode.WIFI_LAN) {
-                            viewModel.openSettings(4)
-                        } else {
-                            viewModel.setShowPairedDialog(true)
+                        when (currentMode) {
+                            TransportMode.WIFI_LAN -> viewModel.openSettings(4)
+                            TransportMode.BLUETOOTH_HID -> viewModel.setShowPairedDialog(true)
+                            TransportMode.USB_HID -> viewModel.reinitUsbHid()
                         }
                     },
                     onRestoreDefaultIme = {
@@ -322,7 +325,8 @@ fun LandscapeUnifiedHeader(
     onOpenPairedDevices: () -> Unit,
     onOpenSettings: () -> Unit,
     onToggleDiagnostics: () -> Unit,
-    onReRegister: () -> Unit
+    onReRegister: () -> Unit,
+    onReinitUsb: () -> Unit
 ) {
     Surface(
         color = SurfaceBar,
@@ -406,9 +410,14 @@ fun LandscapeUnifiedHeader(
                 }
             }
 
-            // CENTER: Transport Segment (Bluetooth | Wi-Fi LAN) + Status Dot
+            // CENTER: Transport Segment (Bluetooth | Wi-Fi LAN | USB HID) + Status Dot
             if (currentRole == AppRole.KEYBOARD) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 6.dp)
+                ) {
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(3.dp))
@@ -423,7 +432,7 @@ fun LandscapeUnifiedHeader(
                                     .clip(RoundedCornerShape(2.dp))
                                     .background(if (isBt) SurfaceElevated else Color.Transparent)
                                     .clickable { onSelectMode(TransportMode.BLUETOOTH_HID) }
-                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
                             ) {
                                 Text(
                                     "Bluetooth",
@@ -439,7 +448,7 @@ fun LandscapeUnifiedHeader(
                                     .clip(RoundedCornerShape(2.dp))
                                     .background(if (isWifi) SurfaceElevated else Color.Transparent)
                                     .clickable { onSelectMode(TransportMode.WIFI_LAN) }
-                                    .padding(horizontal = 8.dp, vertical = 2.dp)
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
                             ) {
                                 Text(
                                     "Wi-Fi LAN",
@@ -448,10 +457,26 @@ fun LandscapeUnifiedHeader(
                                     color = if (isWifi) KeyTextMain else KeyTextSubtle
                                 )
                             }
+
+                            val isUsb = currentMode == TransportMode.USB_HID
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(2.dp))
+                                    .background(if (isUsb) SurfaceElevated else Color.Transparent)
+                                    .clickable { onSelectMode(TransportMode.USB_HID) }
+                                    .padding(horizontal = 6.dp, vertical = 2.dp)
+                            ) {
+                                Text(
+                                    "USB HID",
+                                    fontSize = 10.sp,
+                                    fontWeight = if (isUsb) FontWeight.SemiBold else FontWeight.Normal,
+                                    color = if (isUsb) AccentPrimary else KeyTextSubtle
+                                )
+                            }
                         }
                     }
 
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
 
                     // Status Dot + Host text
                     val dotColor = when (state.status) {
@@ -474,6 +499,7 @@ fun LandscapeUnifiedHeader(
                         fontSize = 10.sp,
                         color = KeyTextMuted,
                         maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                         fontFamily = FontFamily.Monospace
                     )
                 }
@@ -491,6 +517,10 @@ fun LandscapeUnifiedHeader(
                         }
                         IconButton(onClick = onReRegister, modifier = Modifier.size(24.dp)) {
                             Icon(Icons.Default.Refresh, contentDescription = "Refresh", tint = KeyTextSubtle, modifier = Modifier.size(15.dp))
+                        }
+                    } else if (currentMode == TransportMode.USB_HID) {
+                        IconButton(onClick = onReinitUsb, modifier = Modifier.size(24.dp)) {
+                            Icon(Icons.Default.Refresh, contentDescription = "Re-bind USB HID", tint = AccentPrimary, modifier = Modifier.size(15.dp))
                         }
                     }
 
@@ -1454,14 +1484,14 @@ fun KeyboardStandbyScreen(
                                 fontSize = 11.sp
                             )
                             Spacer(modifier = Modifier.height(6.dp))
-                            val transportSummary = if (currentMode == TransportMode.BLUETOOTH_HID) {
-                                "Bluetooth HID • ${state.statusMessage}"
-                            } else {
-                                "Wi-Fi LAN • Máy này: $myLocalIp -> Đích: ${state.wifiTargetIp}:${state.wifiTargetPort}"
+                            val transportSummary = when (currentMode) {
+                                TransportMode.BLUETOOTH_HID -> "Bluetooth HID • ${state.statusMessage}"
+                                TransportMode.WIFI_LAN -> "Wi-Fi LAN • Máy này: $myLocalIp -> Đích: ${state.wifiTargetIp}:${state.wifiTargetPort}"
+                                TransportMode.USB_HID -> "USB HID (Root) • ${state.statusMessage}"
                             }
                             Text(
                                 text = transportSummary,
-                                color = AccentPrimary,
+                                color = if (currentMode == TransportMode.USB_HID && state.status == ConnectionStatus.FAILED) StatusError else AccentPrimary,
                                 fontSize = 10.sp,
                                 fontFamily = FontFamily.Monospace
                             )
@@ -1502,14 +1532,22 @@ fun KeyboardStandbyScreen(
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)
                         ) {
                             Icon(
-                                imageVector = if (currentMode == TransportMode.WIFI_LAN) Icons.Default.Wifi else Icons.Default.Devices,
+                                imageVector = when (currentMode) {
+                                    TransportMode.WIFI_LAN -> Icons.Default.Wifi
+                                    TransportMode.BLUETOOTH_HID -> Icons.Default.Devices
+                                    TransportMode.USB_HID -> Icons.Default.Usb
+                                },
                                 contentDescription = null,
                                 tint = AccentPrimary,
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(5.dp))
                             Text(
-                                text = if (currentMode == TransportMode.WIFI_LAN) "Cấu hình LAN" else "Thiết bị BT",
+                                text = when (currentMode) {
+                                    TransportMode.WIFI_LAN -> "Cấu hình LAN"
+                                    TransportMode.BLUETOOTH_HID -> "Thiết bị BT"
+                                    TransportMode.USB_HID -> "Kích hoạt USB"
+                                },
                                 color = KeyTextMain,
                                 fontSize = 10.sp,
                                 fontWeight = FontWeight.Medium

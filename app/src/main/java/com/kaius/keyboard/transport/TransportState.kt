@@ -2,7 +2,8 @@ package com.kaius.keyboard.transport
 
 enum class TransportMode {
     BLUETOOTH_HID,
-    WIFI_LAN
+    WIFI_LAN,
+    USB_HID
 }
 
 enum class ConnectionStatus {

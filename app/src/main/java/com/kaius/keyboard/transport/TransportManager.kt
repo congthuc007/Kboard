@@ -3,6 +3,7 @@ package com.kaius.keyboard.transport
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import com.kaius.keyboard.transport.bluetooth.BluetoothHidTransport
+import com.kaius.keyboard.transport.usb.UsbHidTransport
 import com.kaius.keyboard.transport.wifi.WifiLanTransport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,6 +17,7 @@ class TransportManager(
 ) {
     val bluetoothTransport = BluetoothHidTransport(context, scope)
     val wifiTransport = WifiLanTransport(scope)
+    val usbTransport = UsbHidTransport(context, scope)
 
     private val _currentMode = MutableStateFlow(TransportMode.BLUETOOTH_HID)
     val currentMode: StateFlow<TransportMode> = _currentMode.asStateFlow()
@@ -24,16 +26,22 @@ class TransportManager(
         get() = when (_currentMode.value) {
             TransportMode.BLUETOOTH_HID -> bluetoothTransport
             TransportMode.WIFI_LAN -> wifiTransport
+            TransportMode.USB_HID -> usbTransport
         }
 
     val activeState: StateFlow<TransportState>
         get() = when (_currentMode.value) {
             TransportMode.BLUETOOTH_HID -> bluetoothTransport.state
             TransportMode.WIFI_LAN -> wifiTransport.state
+            TransportMode.USB_HID -> usbTransport.state
         }
 
     fun setMode(mode: TransportMode) {
-        if (_currentMode.value == mode) return
+        val previous = _currentMode.value
+        if (previous == mode) return
+        if (previous == TransportMode.USB_HID) {
+            usbTransport.release()
+        }
         _currentMode.value = mode
         when (mode) {
             TransportMode.BLUETOOTH_HID -> {
@@ -41,6 +49,9 @@ class TransportManager(
             }
             TransportMode.WIFI_LAN -> {
                 wifiTransport.initialize()
+            }
+            TransportMode.USB_HID -> {
+                usbTransport.initialize()
             }
         }
     }
@@ -52,6 +63,7 @@ class TransportManager(
     fun release() {
         bluetoothTransport.release()
         wifiTransport.release()
+        usbTransport.release()
     }
 
     fun sendKeyDown(keyCode: Byte, modifiers: Byte) {

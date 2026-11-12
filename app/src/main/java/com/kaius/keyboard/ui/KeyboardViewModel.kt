@@ -50,6 +50,7 @@ class KeyboardViewModel(application: Application) : AndroidViewModel(application
             when (mode) {
                 TransportMode.BLUETOOTH_HID -> transportManager.bluetoothTransport.state
                 TransportMode.WIFI_LAN -> transportManager.wifiTransport.state
+                TransportMode.USB_HID -> transportManager.usbTransport.state
             }
         }
         .stateIn(
@@ -129,15 +130,24 @@ class KeyboardViewModel(application: Application) : AndroidViewModel(application
         _isKeyboardActive.value = active
         prefs.edit().putBoolean("is_keyboard_active", active).apply()
         if (active) {
-            if (currentMode.value == TransportMode.WIFI_LAN) {
-                transportManager.wifiTransport.initialize()
-                if (_appRole.value == AppRole.KEYBOARD) {
-                    lanDiscovery.startDiscovery()
+            when (currentMode.value) {
+                TransportMode.WIFI_LAN -> {
+                    transportManager.wifiTransport.initialize()
+                    if (_appRole.value == AppRole.KEYBOARD) {
+                        lanDiscovery.startDiscovery()
+                    }
                 }
-            } else {
-                val btStatus = transportManager.bluetoothTransport.state.value.status
-                if (btStatus == ConnectionStatus.DISCONNECTED || btStatus == ConnectionStatus.FAILED) {
-                    transportManager.bluetoothTransport.initialize()
+                TransportMode.BLUETOOTH_HID -> {
+                    val btStatus = transportManager.bluetoothTransport.state.value.status
+                    if (btStatus == ConnectionStatus.DISCONNECTED || btStatus == ConnectionStatus.FAILED) {
+                        transportManager.bluetoothTransport.initialize()
+                    }
+                }
+                TransportMode.USB_HID -> {
+                    val usbStatus = transportManager.usbTransport.state.value.status
+                    if (usbStatus != ConnectionStatus.CONNECTED && usbStatus != ConnectionStatus.CONNECTING) {
+                        transportManager.usbTransport.initialize()
+                    }
                 }
             }
         } else {
@@ -300,6 +310,10 @@ class KeyboardViewModel(application: Application) : AndroidViewModel(application
 
     fun reRegisterHid() {
         transportManager.registerBluetoothHid()
+    }
+
+    fun reinitUsbHid() {
+        transportManager.usbTransport.initialize()
     }
 
     fun updateWifiTarget(ip: String, port: Int) {

@@ -6,19 +6,19 @@
 ![Kotlin](https://img.shields.io/badge/Kotlin-Jetpack%20Compose-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)
 ![Bluetooth](https://img.shields.io/badge/Bluetooth-HID%20Profile-0075FF?style=for-the-badge&logo=bluetooth&logoColor=white)
 ![Network](https://img.shields.io/badge/LAN-UDP%20Auto--Discovery-00C853?style=for-the-badge)
-![Version](https://img.shields.io/badge/Version-v1.1.20-FF6D00?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-v1.1.21-FF6D00?style=for-the-badge)
 
 **Ứng dụng biến điện thoại thông minh thành bàn phím cơ ảo cho Máy tính, Laptop và Thiết bị Android khác qua kết nối Wi-Fi LAN hoặc Bluetooth.**
 
 <br/>
 
-[![Download Android APK](https://img.shields.io/badge/Tải_ngay-Kboard.apk_(Android)-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.20/Kboard.apk)
-[![Download Windows Receiver](https://img.shields.io/badge/Tải_ngay-Kboard_Receiver.exe_(Windows)-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.20/Kboard_Receiver.exe)
+[![Download Android APK](https://img.shields.io/badge/Tải_ngay-Kboard.apk_(Android)-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.21/Kboard.apk)
+[![Download Windows Receiver](https://img.shields.io/badge/Tải_ngay-Kboard_Receiver.exe_(Windows)-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/congthuc007/Kboard/releases/download/v1.1.21/Kboard_Receiver.exe)
 [![View All Releases](https://img.shields.io/badge/Tất_cả_phiên_bản-GitHub_Releases-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/congthuc007/Kboard/releases)
 
 <br/>
 
-**Tác giả:** [Nguyễn Công Thức (Kaius)](https://github.com/congthuc007) • **Phiên bản mới nhất:** [v1.1.20 Release](https://github.com/congthuc007/Kboard/releases/tag/v1.1.20)
+**Tác giả:** [Nguyễn Công Thức (Kaius)](https://github.com/congthuc007) • **Phiên bản mới nhất:** [v1.1.21 Release](https://github.com/congthuc007/Kboard/releases/tag/v1.1.21)
 
 </div>
 
@@ -40,13 +40,17 @@
 * **Hardware Key Repeat (Đè phím lặp ký tự)**: Tích hợp engine lặp phím — nhấn giữ phím quá 380ms sẽ kích hoạt chu kỳ lặp phím 45ms (~22 ký tự/giây) tương tự phím vật lý.
 * **Thanh Macro 1 chạm**: Tích hợp sẵn các tổ hợp phím phổ biến: `Ctrl+C`, `Ctrl+V`, `Ctrl+A`, `Ctrl+Z`, `Alt+Tab`, `Win`.
 
-### Cơ chế truyền tải (Dual-Transport)
+### Cơ chế truyền tải (Tri-Transport)
 * **Bluetooth HID Device Profile**:
-  * Đóng vai trò là thiết bị ngoại vi USB HID Keyboard.
+  * Đóng vai trò là thiết bị ngoại vi Bluetooth HID Keyboard.
   * Nếu thiết bị gửi hỗ trợ Bluetooth HID Device, máy nhận (PC, Laptop, Smartphone) có thể nhận diện trực tiếp như bàn phím Bluetooth mà **không cần cài thêm phần mềm trên máy nhận**.
 * **Wi-Fi LAN UDP Bridge**:
   * Hoạt động thông qua mạng Wi-Fi nội bộ bằng giao thức UDP trên cổng 8964.
   * **Tự động dò tìm thiết bị (Auto Discovery)**: Thiết bị gửi hỗ trợ quét và phát hiện các máy nhận đang trực tuyến trong cùng mạng LAN để kết nối nhanh.
+* **USB HID Gadget (Dành cho máy đã Root)**:
+  * Tự động gắn hàm USB HID Boot Keyboard qua Linux ConfigFS (`/config/usb_gadget`) và ghi gói HID 8-byte vào `/dev/hidg0`.
+  * Khi cắm cáp vào Laptop/PC, máy nhận diện trực tiếp như bàn phím USB phần cứng (Plug & Play, hoạt động cả ở BIOS/màn hình khóa, không cần cài `Kboard_Receiver.exe`).
+  * Máy chưa root vẫn sử dụng **Bluetooth** và **Wi-Fi LAN** bình thường.
 
 ### Bộ gõ Tiếng Việt Telex & Bàn phím ảo hệ thống (Android IME)
 * **Tích hợp sẵn Kboard IME (InputMethodService)**:
@@ -94,8 +98,8 @@
 
 | Nền tảng | Tệp cài đặt | Nút tải trực tiếp (1-Click) | Ghi chú |
 | :--- | :--- | :---: | :--- |
-| **Android** | `Kboard.apk` | [**Tải Kboard.apk**](https://github.com/congthuc007/Kboard/releases/download/v1.1.20/Kboard.apk) | Bản cài đặt cho điện thoại làm bàn phím hoặc điện thoại nhận |
-| **Windows** | `Kboard_Receiver.exe` | [**Tải Windows Receiver**](https://github.com/congthuc007/Kboard/releases/download/v1.1.20/Kboard_Receiver.exe) | Giao diện Desktop GUI chạy ngay trên Laptop/PC Windows (không cần cài driver) |
+| **Android** | `Kboard.apk` | [**Tải Kboard.apk**](https://github.com/congthuc007/Kboard/releases/download/v1.1.21/Kboard.apk) | Bản cài đặt cho điện thoại làm bàn phím hoặc điện thoại nhận |
+| **Windows** | `Kboard_Receiver.exe` | [**Tải Windows Receiver**](https://github.com/congthuc007/Kboard/releases/download/v1.1.21/Kboard_Receiver.exe) | Giao diện Desktop GUI chạy ngay trên Laptop/PC Windows (không cần cài driver) |
 | **Lịch sử** | Bản ổn định | [**Xem GitHub Releases**](https://github.com/congthuc007/Kboard/releases) | Kho lưu trữ các phiên bản phát hành chính thức |
 
 ---
@@ -140,7 +144,8 @@
 
 | Phiên bản | Trạng thái | Chi tiết |
 | :--- | :--- | :--- |
-| **v1.1.20** | **Ổn định** | Bổ sung màn hình trạng thái & công tắc gạt Bật/Tắt bàn phím 75% (mặc định Tắt khi cài mới, lưu trạng thái qua các lần mở app). |
+| **v1.1.21** | **Ổn định** | Tích hợp chế độ **USB HID Gadget (Root)** cắm cáp USB nhận như bàn phím vật lý qua ConfigFS (`/dev/hidg0`); máy chưa root dùng Bluetooth và Wi-Fi LAN bình thường. |
+| **v1.1.20** | **Ổn định (Cũ)** | Bổ sung màn hình trạng thái & công tắc gạt Bật/Tắt bàn phím 75% (mặc định Tắt khi cài mới, lưu trạng thái qua các lần mở app). |
 | **v1.1.19** | **Ổn định (Cũ)** | Khôi phục kiến trúc IME v14, xử lý sự kiện phím bổ trợ cho tổ hợp Macro Ctrl+A/C/V/Z, giảm thời gian trễ nút Win xuống 15ms, cập nhật Receiver GUI. |
 | v1.1.15 - v1.1.18 | **Đã thu hồi (Không sử dụng)** | Các bản thử nghiệm có lỗi thoát app clone khi bấm Win hoặc bị chặn sự kiện bàn phím. Đã gỡ khỏi GitHub Releases. |
 | v1.1.14 | **Ổn định (Cũ)** | Bản ổn định cột mốc hỗ trợ IME phần cứng. |
